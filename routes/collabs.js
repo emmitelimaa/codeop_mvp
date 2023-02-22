@@ -13,7 +13,7 @@ router.get("/", function(req, res, next) {
 });
 
 //Getting 
-router.get("/:", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   let id = req.params.id;
 
   try {
@@ -30,7 +30,19 @@ router.get("/:", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  let { firstname, lastname } = req.body;
+  let { influencer_name, 
+    handle, 
+    platform,
+    date,
+    brief,
+    status_collab,
+    followers,
+    price_ex_vat,
+    ig_post,
+    ig_story,
+    boosted,
+    comments,
+    country_code } = req.body;
 
   try {
     await db(`INSERT INTO collabs (influencer_name, 
@@ -69,7 +81,8 @@ router.post("/", async (req, res, next) => {
 });
 
 router.put("/:collab_id", async (req, res) => {
-  let id = req.params.collab_id;
+  let collab_id = req.params.collab_id;
+
   let { influencer_name, 
     handle, 
     platform,
@@ -79,14 +92,13 @@ router.put("/:collab_id", async (req, res) => {
     followers,
     price_ex_vat,
     ig_post,
-    ig_reel,
-    ig_video,
+    ig_story,
     boosted,
     comments,
     country_code } = req.body;
 
   try {
-      let result = await db(`SELECT * FROM collabs WHERE collab_id = ${id}`);  // does duck exist?
+      let result = await db(`SELECT * FROM collabs WHERE collab_id = ${collab_id}`); 
       if (result.data.length === 0) {
           res.status(404).send({ error: 'Collaboration not found' });
       } else {
@@ -103,16 +115,15 @@ router.put("/:collab_id", async (req, res) => {
               ig_post= '${ig_post}',
               ig_story = '${ig_story}',
               boosted = '${boosted}',
-              reminder = '${reminder}',
               comments = '${comments}',
-              country_code = '${country_code}',
-              WHERE collab_id = ${id}
+              country_code = '${country_code}'
+              WHERE collab_id = ${collab_id}
           `;
 
-          await db(sql);  // update duck
+          await db(sql);  
           let result = await db('SELECT * FROM collabs');
           let collabs = result.data;
-          res.send(collabs);  // return updated array
+          res.send(collabs); 
       }
   } catch (err) {
       res.status(500).send({ error: err.message });
@@ -120,17 +131,17 @@ router.put("/:collab_id", async (req, res) => {
 });
 
 router.delete("/:collab_id", async (req, res, next) => {
-  let id = req.params.id;
+  let id = req.params.collab_id;
 
   try {
-    let result = await db(`SELECT * FROM students WHERE id = ${id}`);
+    let result = await db(`SELECT * FROM collabs WHERE collab_id = ${id}`);
 
     if (result.data.length !== 0) {
-      await db(`DELETE FROM students WHERE id = ${id}`);
-      let result = await db("SELECT * FROM students");
+      await db(`DELETE FROM collabs WHERE collab_id = ${id}`);
+      let result = await db("SELECT * FROM collabs");
       res.send(result.data);
     } else {
-      res.status(404).send({ error: "student not found" });
+      res.status(404).send({ error: "collab not found" });
     }
   } catch (err) {
     res.status(500).send(err.message);
