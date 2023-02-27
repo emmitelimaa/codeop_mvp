@@ -73,7 +73,7 @@ router.post("/", async (req, res, next) => {
       '${comments}',
       '${country_code}')`);
 
-    let result = await db("SELECT * FROM collabs ORDER BY collab_id DESC");
+    let result = await db("SELECT * FROM collabs ORDER BY collab_id ASC");
     res.send(result.data);
   } catch (err) {
     res.status(500).send(err.message);

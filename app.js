@@ -17,6 +17,6 @@ app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/collabs', collabsRouter);
-app.use('/users', usersRouter);
+app.use('/influencers', usersRouter);
 
 module.exports = app;

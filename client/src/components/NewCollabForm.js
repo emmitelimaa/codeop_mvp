@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-//import "./NewCollabForm.css";
+import React, { useEffect, useState} from "react";
+import "./NewCollabForm.css";
 
 const EMPTY_FORM = {
     influencer_name: "",
@@ -10,15 +10,14 @@ const EMPTY_FORM = {
     status_collab: "",
     followers: 0,
     price_ex_vat: 0,
-    ig_post: false,
-    ig_story: false,
-    boosted: false,
+    ig_post: 0,
+    ig_story: 0,
+    boosted: 0,
     comments: "",
     country_code: ""
   };
-  
 
-  const INPUT_FIELDS = [
+const INPUT_FIELDS = [
     {
       name: "influencer_name",
       label: "Influencer Name",
@@ -87,40 +86,101 @@ const EMPTY_FORM = {
   ];
 
 function NewCollabForm(props) {
-  const [formData, setFormData] = useState(EMPTY_FORM);
-  const [searchResults, setSearchResults] = useState([]);
+  const [formData, setFormData] = useState(props.editedCollab || EMPTY_FORM);
+  const [searchResult, setSearchResult] = useState([]);
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
-    setFormData(data => ({
+
+    if (type === 'checkbox') {
+      setFormData( (data) => ({
+        ...data,
+        [name]: checked ? 1 : 0,
+      }));
+    } else {
+      setFormData( (data) => ({
+        ...data,
+        [name]: name==="date" ? new Date(value).toISOString().substring(0, 10) : value,
+      }))
+    }
+    if(name === "influencer_name"){
+       
+        fetchInfluencers(value);
+        
+    }
+  }
+
+  async function fetchInfluencers(value){
+    try {
+        let response = await fetch(`/influencers?search=${value}`);
+        if (response.ok) {
+            let data = await response.json();
+            
+            const updatedData = data.map(item => {
+              const { date, ...rest } = item;
+              const newDate = new Date(date).toISOString().substring(0, 10);
+              return { ...rest, date: newDate };
+            });
+
+            setSearchResult(updatedData);
+        } else {
+            console.log(`Server error: ${response.status} ${response.statusText}`);
+        }
+    } catch (err) {
+        console.log(`Server error: ${err.message}`);
+    }
+  }
+
+  function handleInfluencerSelect(influencer) {
+    const {date, ...rest} = influencer;
+    const formattedDate = new Date(date).toISOString().substring(0, 10);
+    setFormData((data) => ({
       ...data,
-      [name]: type === "checkbox" ? checked : value
+      ...rest,
+      date: formattedDate,
     }));
   }
 
   function handleSubmit(e) {
     e.preventDefault();
+    console.log(formData);
     props.addCollabCb(formData);
-    setFormData(EMPTY_FORM);
+    setFormData(props.editedCollab || EMPTY_FORM);
+    props.setEditingId && props.setEditingId(null);
   }
 
+
   return (
-    <form className="NewCollabForm" onSubmit={handleSubmit}>
+    <div>
+    <table className="NewCollabForm">
+      <tr>
+      <button onClick= {handleSubmit} >save</button>
       {INPUT_FIELDS.map(({ name, label, type }) => (
-        <label key={name}>
-          {label}
+
           <input
+            key = {name}
+            placeholder = {label}
             type={type}
             name={name}
             value={formData[name]}
             onChange={handleChange}
             checked={formData[name]}
           />
-        </label>
       ))}
+      </tr>
+    </table>
 
-      <button type="submit">Submit</button>
-    </form>
+    <div>
+    <div className="SearchResult">
+          {searchResult.map((influencer) => (
+            <div key={influencer.id} onClick={() => handleInfluencerSelect(influencer)}>
+              {influencer.influencer_name} {influencer.platform} {influencer.date}
+            </div>
+          ))}
+        </div>
+    </div>
+
+    </div>
   );
 }
 

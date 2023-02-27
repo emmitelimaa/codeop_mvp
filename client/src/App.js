@@ -16,18 +16,47 @@ export default function App() {
     try {
         let response = await fetch('/collabs');
         if (response.ok) {
-            let collabs = await response.json();
-            setCollabs(collabs);
+          let data = await response.json();
+          const updatedData = data.map(item => {
+            const { date, ...rest } = item;
+            const newDate = new Date(date).toISOString().substring(0, 10);
+            return { ...rest, date: newDate };
+          });
+        setCollabs(updatedData);
+
         } else {
             console.log(`Server error: ${response.status} ${response.statusText}`);
         }
+
     } catch (err) {
         console.log(`Server error: ${err.message}`);
     }
-}
+  }
 
 
     async function addCollab(collab) {
+
+      if (collab.collab_id) {
+
+          let options = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(collab)
+        };
+    
+        try {
+            let response = await fetch(`/collabs/${collab.collab_id}`, options);
+            if (response.ok) {
+                let collabs = await response.json();
+                setCollabs(collabs);
+            } else {
+                console.log(`Server error: ${response.status} ${response.statusText}`);
+            }
+        } catch (err) {
+            console.log(`Server error: ${err.message}`);
+        }
+
+      } else {
 
         let options = {
             method: 'POST',
@@ -46,7 +75,30 @@ export default function App() {
         } catch (err) {
             console.log(`Server error: ${err.message}`);
         }
+      }
     }
+
+    async function editCollab(id, collab) {
+      let options = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(collab)
+    };
+
+    try {
+        let response = await fetch(`/collabs/${id}`, options);
+        if (response.ok) {
+            let collabs = await response.json();
+            setCollabs(collabs);
+        } else {
+            console.log(`Server error: ${response.status} ${response.statusText}`);
+        }
+    } catch (err) {
+        console.log(`Server error: ${err.message}`);
+    }
+    }
+
+
 
   return (
     <div className="App">
@@ -57,7 +109,9 @@ export default function App() {
         </nav>
       </header>
       <CollabList 
+        editCb = {editCollab}
         collabs = {collabs}
+        addCollabCb={addCollab}
       />
       <NewCollabForm 
         addCollabCb={addCollab}/>

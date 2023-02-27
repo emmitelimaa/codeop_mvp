@@ -7,8 +7,20 @@ const db = require("../model/helper");
 //   res.send('respond with a resource');
 // });
 
-router.get("/influencers", function(req, res, next) {
-  db("SELECT * FROM influencers;")
+router.get("/", function(req, res, next) {
+  const search = req.query.search;
+  db(`SELECT 
+    DISTINCT influencer_name,
+    handle,
+    platform,
+    MAX(followers) AS followers,
+    price_ex_vat,
+    MAX(date) AS date
+    FROM influencers
+    WHERE influencer_name LIKE "${search}%"
+    GROUP BY 1,2,3,5
+    ORDER BY influencer_name, platform
+    ;`)
     .then(results => {
       res.send(results.data);
     })
