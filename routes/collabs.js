@@ -3,16 +3,14 @@ var router = express.Router();
 const db = require("../model/helper");
 
 
-/* GET home page. */
 router.get("/", function(req, res, next) {
-  db("SELECT * FROM collabs;")
+  db("SELECT * FROM collabs ORDER BY date ASC;")
     .then(results => {
       res.send(results.data);
     })
     .catch(err => res.status(500).send(err.message));
 });
 
-//Getting 
 router.get("/:id", async (req, res, next) => {
   let id = req.params.id;
 
@@ -73,7 +71,7 @@ router.post("/", async (req, res, next) => {
       '${comments}',
       '${country_code}')`);
 
-    let result = await db("SELECT * FROM collabs ORDER BY collab_id ASC");
+    let result = await db("SELECT * FROM collabs ORDER BY date ASC");
     res.send(result.data);
   } catch (err) {
     res.status(500).send(err.message);
@@ -121,7 +119,7 @@ router.put("/:collab_id", async (req, res) => {
           `;
 
           await db(sql);  
-          let result = await db('SELECT * FROM collabs');
+          let result = await db('SELECT * FROM collabs ORDER BY date ASC');
           let collabs = result.data;
           res.send(collabs); 
       }

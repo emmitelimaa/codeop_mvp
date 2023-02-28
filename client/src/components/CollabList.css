@@ -1,4 +1,17 @@
-.NewCollabForm form {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+.CollabList {
+    text-align: left;
+    padding-left: 2%;
+    padding-right: 2%;
+    border: 1px solid lightgray;
+}
+/* .Headers {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+} */
+
+.Headers{
+    margin-top: 2%;
+    margin-bottom: 2%;
 }

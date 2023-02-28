@@ -1,4 +1,8 @@
 import React, { useEffect, useState} from "react";
+import Table from 'react-bootstrap/Table';
+import InputGroup from 'react-bootstrap/InputGroup';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import "./NewCollabForm.css";
 
 const EMPTY_FORM = {
@@ -6,7 +10,7 @@ const EMPTY_FORM = {
     handle: "",
     platform: "",
     date: "",
-    brief: "",
+    brief: 0,
     status_collab: "",
     followers: 0,
     price_ex_vat: 0,
@@ -100,8 +104,9 @@ function NewCollabForm(props) {
     } else {
       setFormData( (data) => ({
         ...data,
-        [name]: name==="date" ? new Date(value).toISOString().substring(0, 10) : value,
+        [name]: name==="date" ? new Date(value).toISOString().substring(0, 10) : value, //YYYY-MM-DD
       }))
+  
     }
     if(name === "influencer_name"){
        
@@ -143,7 +148,6 @@ function NewCollabForm(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(formData);
     props.addCollabCb(formData);
     setFormData(props.editedCollab || EMPTY_FORM);
     props.setEditingId && props.setEditingId(null);
@@ -152,23 +156,177 @@ function NewCollabForm(props) {
 
   return (
     <div>
-    <table className="NewCollabForm">
+    <Table className="NewCollabForm" responsive="sm">
       <tr>
-      <button onClick= {handleSubmit} >save</button>
-      {INPUT_FIELDS.map(({ name, label, type }) => (
-
-          <input
-            key = {name}
-            placeholder = {label}
-            type={type}
-            name={name}
-            value={formData[name]}
+      <td colSpan={INPUT_FIELDS.length + 1}>
+        {/* <button onClick= {handleSubmit} >save</button> */}
+        <InputGroup size="sm">
+          <Button 
+            onClick= {handleSubmit} 
+            variant="outline-secondary" >
+            save
+          </Button>
+          
+          <Form.Control 
+            key = "influencer_name"
+            placeholder = "name"
+            type = "text"
+            name="influencer_name"
+            value={formData.influencer_name}
             onChange={handleChange}
-            checked={formData[name]}
+            checked={formData.influencer_name}
           />
-      ))}
+
+          <Form.Control 
+            key = "handle"
+            placeholder = "handle"
+            type = "text"
+            name="handle"
+            value={formData.handle}
+            onChange={handleChange}
+            checked={formData.handle}
+          />
+
+          <Form.Select
+            key = "platform"
+            placeholder = "platform"
+            type = "text"
+            name="platform"
+            value={formData.platform}
+            onChange={handleChange}
+            checked={formData.platform} >
+                    <option>Platform</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="youtube">Youtube</option>
+                    <option value="tiktok">TikTok</option>
+                    <option value="blog">Blog</option>
+          </Form.Select>
+
+          <Form.Control 
+            key = "date"
+            type = "date"
+            name= "date"
+            value= {formData.date}
+            onChange={handleChange}
+            checked={formData.date}
+          />
+
+          <Form.Control 
+            key = "brief"
+            placeholder = "brief"
+            type = "number"
+            name="brief"
+            value={formData.brief}
+            onChange={handleChange}
+            checked={formData.brief}
+          />
+
+          <Form.Select
+            key = "status_collab"
+            placeholder = "Collab status"
+            type = "text"
+            name="status_collab"
+            value={formData.status_collab}
+            onChange={handleChange}
+            checked={formData.status_collab} >
+                    <option>Collab status</option>
+                    <option value= "done">done</option>
+                    <option value= "booked">booked</option>
+                    <option value= "planning">planning</option>
+                    <option value= "cancelled">cancelled</option>
+          </Form.Select>
+
+          <Form.Control 
+            key = "followers"
+            placeholder = "followers"
+            type = "number"
+            name="followers"
+            value={formData.followers}
+            onChange={handleChange}
+            checked={formData.followers}
+          />
+
+          <Form.Control 
+            key = "price_ex_vat"
+            placeholder = "price ex VAT"
+            type = "number"
+            name="price_ex_vat"
+            value={formData.price_ex_vat}
+            onChange={handleChange}
+            checked={formData.price_ex_vat}
+          />
+
+          <Form.Check
+            key = "ig_post"
+            type= "checkbox"
+            name="ig_post"
+            value={formData.ig_post}
+            onChange={handleChange}
+            checked={formData.ig_post}
+          />
+
+          <Form.Check
+            key = "ig_story"
+            type= "checkbox"
+            name="ig_story"
+            value={formData.ig_story}
+            onChange={handleChange}
+            checked={formData.ig_story}
+          />
+
+          <Form.Check
+            key = "boosted"
+            type= "checkbox"
+            name="boosted"
+            value={formData.boosted}
+            onChange={handleChange}
+            checked={formData.boosted}
+          />
+
+          <Form.Control 
+            key = "comments"
+            placeholder = "comments"
+            type = "text"
+            name="comments"
+            value={formData.comments}
+            onChange={handleChange}
+            checked={formData.comments}
+          />
+
+          <Form.Select
+            key = "country_code"
+            placeholder = "Country code"
+            type = "text"
+            name="country_code"
+            value={formData.country_code}
+            onChange={handleChange}
+            checked={formData.country_code} >
+              <option>Country code</option>
+              <option value= "SE">SE</option>
+              <option value= "FI">FI</option>
+              <option value= "DE">DE</option>
+              <option value= "NO">NO</option>
+          </Form.Select>
+
+
+        {/* {INPUT_FIELDS.map(({ name, label, type }) => (
+
+            <Form.Control classname="inputs"
+              key = {name}
+              aria-label={label}
+              placeholder = {label}
+              type={type}
+              name={name}
+              value={formData[name]}
+              onChange={handleChange}
+              checked={formData[name]}
+            />
+        ))} */}
+        {/* <button onClick= {handleDelete} >delete</button> */}
+        </InputGroup>
+     </td>
       </tr>
-    </table>
+    </Table>
 
     <div>
     <div className="SearchResult">
