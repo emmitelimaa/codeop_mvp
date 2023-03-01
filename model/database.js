@@ -19,22 +19,19 @@ con.connect(function(err) {
   console.log("Connected!");
 
   let sql = `DROP TABLE if exists collabs; 
-    CREATE TABLE collabs(collab_id INT NOT NULL AUTO_INCREMENT, 
+    CREATE TABLE collabs
+      (collab_id INT NOT NULL AUTO_INCREMENT, 
       influencer_name VARCHAR(40) not null, 
       handle VARCHAR(40), 
       platform VARCHAR(40), 
       date DATE, 
       brief INTEGER, 
-      status_material VARCHAR(40), 
       status_collab VARCHAR(20) NOT NULL, 
       followers INTEGER, 
-      share_relevant INTEGER, 
       price_ex_vat INTEGER, 
       ig_post BOOLEAN, 
-      ig_reel BOOLEAN, 
-      ig_video BOOLEAN, 
+      ig_story BOOLEAN, 
       boosted BOOLEAN, 
-      reminder BOOLEAN,
       comments VARCHAR(200),
       country_code VARCHAR(2) NOT NULL,
       PRIMARY KEY (collab_id));`;
