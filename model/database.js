@@ -1,5 +1,6 @@
-require("dotenv").config();
-const mysql = require("mysql");
+require("dotenv").config(); 
+const mysql = require("mysql"); 
+const fs = require("fs");
 
 const DB_HOST = process.env.DB_HOST;
 const DB_USER = process.env.DB_USER;
@@ -18,26 +19,10 @@ con.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
 
-  let sql = `DROP TABLE if exists collabs; 
-    CREATE TABLE collabs
-      (collab_id INT NOT NULL AUTO_INCREMENT, 
-      influencer_name VARCHAR(40) not null, 
-      handle VARCHAR(40), 
-      platform VARCHAR(40), 
-      date DATE, 
-      brief INTEGER, 
-      status_collab VARCHAR(20) NOT NULL, 
-      followers INTEGER, 
-      price_ex_vat INTEGER, 
-      ig_post BOOLEAN, 
-      ig_story BOOLEAN, 
-      boosted BOOLEAN, 
-      comments VARCHAR(200),
-      country_code VARCHAR(2) NOT NULL,
-      PRIMARY KEY (collab_id));`;
+  let sql = fs.readFileSync(__dirname+"/init_db.sql").toString();
   con.query(sql, function(err, result) {
     if (err) throw err;
-    console.log("Table creation `collabs` was successful!");
+    console.log("Table creations were successful!");
 
     console.log("Closing...");
   });
