@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 
+/* Here we are displaying the search results from the search bar.
+If we select one collab from the results, it sends the collab to the Form so that it can prefill
+the information.*/
+
 function InfluencerSearch({ onSelect }) {
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);

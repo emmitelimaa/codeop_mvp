@@ -3,6 +3,10 @@ import NewCollabForm from "./NewCollabForm";
 import Table from 'react-bootstrap/Table';
 import "./CollabList.css";
 
+/*Here we are displaying all data that is in our collabs table.
+handleEditClick get's the 1. id, and 2. information of the specific collab/row and sends it to the app,
+so that we can open the form for that row, and prefill it with the information.*/
+
 function CollabList(props) {
 
     const headers = [

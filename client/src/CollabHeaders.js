@@ -1,3 +1,5 @@
+//not using this at the moment
+
 const CollabHeaders = [
     {name: "Influencer name", id: "influencer_name", type:"string"},
     {name: "handle", id: "handle", type:"string"},

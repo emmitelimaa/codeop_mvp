@@ -5,6 +5,9 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import "./NewCollabForm.css";
 
+/* The form functions as a normal form, and has handleChange and handleSubmit functions.
+It also works as an edit field,*/
+
 const EMPTY_FORM = {
     influencer_name: "",
     handle: "",
@@ -96,6 +99,7 @@ function NewCollabForm(props) {
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
 
+    //Here we are just reformatting the checkbox and date inputs so we can insert them to the database
     if (type === 'checkbox') {
       setFormData( (data) => ({
         ...data,
@@ -106,15 +110,15 @@ function NewCollabForm(props) {
         ...data,
         [name]: name==="date" ? new Date(value).toISOString().substring(0, 10) : value, //YYYY-MM-DD
       }))
-  
     }
+    //here we are saying that the first field also functions as a search field
     if(name === "influencer_name"){
        
         fetchInfluencers(value);
         
     }
   }
-
+  //search function
   async function fetchInfluencers(value){
     try {
         let response = await fetch(`/influencers?search=${value}`);
@@ -135,7 +139,7 @@ function NewCollabForm(props) {
         console.log(`Server error: ${err.message}`);
     }
   }
-
+  //prefills form with what we select from search
   function handleInfluencerSelect(influencer) {
     const {date, ...rest} = influencer;
     const formattedDate = new Date(date).toISOString().substring(0, 10);
